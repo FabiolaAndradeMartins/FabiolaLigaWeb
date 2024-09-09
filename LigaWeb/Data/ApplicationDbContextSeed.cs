@@ -7,32 +7,31 @@ namespace LigaWeb.Data
     {
         public static async Task SeedAsync(IServiceProvider serviceProvider)
         {
-            // Obtém o gerenciador de roles e usuários através do DI
+            
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-
-            // Verifica se a role 'Admin' já existe, se não, cria a role
+            
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
                 await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
-
-            // Verifica se o usuário administrador já existe
-            var adminUser = await userManager.FindByEmailAsync("admin@admin.com");
+            
+            var adminUser = await userManager.FindByEmailAsync("bidelavitta1@gmail.com");
             if (adminUser == null)
             {
-                // Cria o usuário administrador
+                
                 var user = new User
                 {
-                    UserName = "admin@admin.com",
-                    Email = "admin@admin.com",
+                    UserName = "bidelavitta1@gmail.com",
+                    Email = "bidelavitta1@gmail.com",
                     EmailConfirmed = true,
+                    FirstName = "Fabiola",
+                    LastName = "Martins",                    
+                    TwoFactorEnabled = false,
                 };
-
-                // Define a senha do usuário
-                var result = await userManager.CreateAsync(user, "Admin123!");
-
-                // Se o usuário foi criado com sucesso, atribui a role de Admin
+                
+                var result = await userManager.CreateAsync(user, "123456");
+                
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, "Admin");
