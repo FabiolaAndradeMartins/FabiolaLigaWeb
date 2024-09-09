@@ -2,7 +2,6 @@ using LigaWeb.Data;
 using LigaWeb.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,9 +24,25 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
     cfg.Password.RequiredLength = 6;
 }).AddEntityFrameworkStores<DataContext>();
 
-
-
 var app = builder.Build();
+
+// Aplicar migrações e realizar o seeding
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+    try
+    {
+        // Chama o método de seeding
+        await ApplicationDbContextSeed.SeedAsync(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "Ocorreu um erro ao semear o banco de dados.");
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
