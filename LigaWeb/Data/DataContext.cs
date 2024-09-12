@@ -33,11 +33,12 @@ namespace LigaWeb.Data
             base.OnModelCreating(builder);
 
             // Seed for Roles and Users
+            /* 
             string adminRoleId = Guid.NewGuid().ToString();
             string employeeRoleId = Guid.NewGuid().ToString();
             string clubRoleId = Guid.NewGuid().ToString();
             string anonimousRoleId = Guid.NewGuid().ToString();
-
+            
             builder.Entity<IdentityRole>().HasData(
                 new IdentityRole
                 {
@@ -91,7 +92,7 @@ namespace LigaWeb.Data
                     RoleId = adminRoleId,
                     UserId = adminUserId,
                 }
-                );
+                );*/
         }
     }
 }

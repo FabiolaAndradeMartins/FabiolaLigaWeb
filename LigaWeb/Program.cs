@@ -1,5 +1,7 @@
 using LigaWeb.Data;
 using LigaWeb.Data.Entities;
+using LigaWeb.Helpers.Impl;
+using LigaWeb.Helpers.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +26,9 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
     cfg.Password.RequiredLength = 6;
 }).AddEntityFrameworkStores<DataContext>();
 
+// Registrar serviços personalizados no contêiner de DI
+builder.Services.AddScoped<IUserHelper, UserHelper>();
+
 var app = builder.Build();
 
 // Aplicar migrações e realizar o seeding
@@ -44,16 +49,17 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
+
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
 
 app.UseRouting();
-
-app.UseAuthorization();
 
 app.UseAuthorization();
 

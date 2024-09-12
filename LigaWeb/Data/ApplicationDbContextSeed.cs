@@ -13,9 +13,24 @@ namespace LigaWeb.Data
             
             if (!await roleManager.RoleExistsAsync("Admin"))
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                await roleManager.CreateAsync(new IdentityRole("Admin"));                
             }
-            
+
+            if (!await roleManager.RoleExistsAsync("Employee"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Employee"));
+            }
+
+            if (!await roleManager.RoleExistsAsync("Club"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Club"));
+            }
+
+            if (!await roleManager.RoleExistsAsync("Anonimous"))
+            {
+                await roleManager.CreateAsync(new IdentityRole("Anonimous"));
+            }
+
             var adminUser = await userManager.FindByEmailAsync("bidelavitta1@gmail.com");
             if (adminUser == null)
             {
