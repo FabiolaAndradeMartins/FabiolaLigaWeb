@@ -1,5 +1,7 @@
 using LigaWeb.Data;
 using LigaWeb.Data.Entities;
+using LigaWeb.Data.Repositories.Impl;
+using LigaWeb.Data.Repositories.Interfaces;
 using LigaWeb.Helpers.Impl;
 using LigaWeb.Helpers.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -28,6 +30,9 @@ builder.Services.AddIdentity<User, IdentityRole>(cfg =>
 
 // Registrar serviços personalizados no contêiner de DI
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<IStadiumRepository, StadiumRepository>();
+builder.Services.AddScoped<IClubRepository, ClubRepository>();
+
 
 var app = builder.Build();
 

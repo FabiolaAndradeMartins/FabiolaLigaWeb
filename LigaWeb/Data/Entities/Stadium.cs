@@ -15,6 +15,6 @@ namespace LigaWeb.Data.Entities
         public string Address { get; set; }
         public int Capacity { get; set; }
 
-        public Club Club{ get; set; }
+        public Club? Club{ get; set; }
     }
 }

@@ -33,6 +33,5 @@ namespace LigaWeb.Data.Entities
         public ICollection<Game> HostGames { get; set; }
         public ICollection<Game> VisitingGames { get; set; }
 
-
     }
 }
