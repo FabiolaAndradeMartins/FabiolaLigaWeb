@@ -20,7 +20,8 @@ namespace LigaWeb.Data.Entities
         [StringLength(400)]
         public string Photo { get; set; }
 
-        [Required]
-        public Club Club { get; set; }
+        
+        public int? ClubId { get; set; }
+        public Club? Club { get; set; }
     }
 }

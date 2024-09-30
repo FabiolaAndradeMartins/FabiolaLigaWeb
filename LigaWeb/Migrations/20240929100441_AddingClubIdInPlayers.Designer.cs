@@ -4,6 +4,7 @@ using LigaWeb.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LigaWeb.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240929100441_AddingClubIdInPlayers")]
+    partial class AddingClubIdInPlayers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,7 +53,7 @@ namespace LigaWeb.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("StadiumId")
+                    b.Property<int>("StadiumId")
                         .HasColumnType("int");
 
                     b.Property<string>("TeamEmblem")
@@ -64,8 +67,7 @@ namespace LigaWeb.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("StadiumId")
-                        .IsUnique()
-                        .HasFilter("[StadiumId] IS NOT NULL");
+                        .IsUnique();
 
                     b.ToTable("Clubs");
                 });
@@ -145,7 +147,7 @@ namespace LigaWeb.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClubId")
+                    b.Property<int>("ClubId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Height")
@@ -407,7 +409,9 @@ namespace LigaWeb.Migrations
                 {
                     b.HasOne("LigaWeb.Data.Entities.Stadium", "Stadium")
                         .WithOne("Club")
-                        .HasForeignKey("LigaWeb.Data.Entities.Club", "StadiumId");
+                        .HasForeignKey("LigaWeb.Data.Entities.Club", "StadiumId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Stadium");
                 });
@@ -443,7 +447,9 @@ namespace LigaWeb.Migrations
                 {
                     b.HasOne("LigaWeb.Data.Entities.Club", "Club")
                         .WithMany("Players")
-                        .HasForeignKey("ClubId");
+                        .HasForeignKey("ClubId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Club");
                 });
