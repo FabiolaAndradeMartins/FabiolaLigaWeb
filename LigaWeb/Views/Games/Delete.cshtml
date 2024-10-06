@@ -1,0 +1,118 @@
+﻿@model LigaWeb.Data.Entities.Game
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Game</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Stadium)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Stadium.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostClub)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostClub.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VisitingClub)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VisitingClub.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsFouls)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsFouls)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsFouls)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsFouls)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsPenalties)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsPenalties)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsPenalties)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsPenalties)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsYellowCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsYellowCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsYellowCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsYellowCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsRedCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsRedCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsRedCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsRedCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsGoalKicks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsGoalKicks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsGoalKicks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsGoalKicks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsGoals)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsGoals)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsGoals)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsGoals)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

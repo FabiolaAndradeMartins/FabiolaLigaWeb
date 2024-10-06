@@ -1,22 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LigaWeb.Data;
 using LigaWeb.Data.Entities;
+using LigaWeb.Helpers.Impl;
+using LigaWeb.Models;
+using LigaWeb.Data.Repositories.Interfaces;
 
 namespace LigaWeb.Controllers
 {
     public class ClubsController : Controller
     {
         private readonly DataContext _context;
+        private readonly IClubRepository _clubRepository;
 
-        public ClubsController(DataContext context)
+        public ClubsController(DataContext context, IClubRepository clubRepository)
         {
             _context = context;
+            _clubRepository = clubRepository;
         }
 
         // GET: Clubs
@@ -31,7 +32,8 @@ namespace LigaWeb.Controllers
         {
             if (id == null || _context.Clubs == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             var club = await _context.Clubs
@@ -39,7 +41,8 @@ namespace LigaWeb.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (club == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             return View(club);
@@ -74,13 +77,15 @@ namespace LigaWeb.Controllers
         {
             if (id == null || _context.Clubs == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             var club = await _context.Clubs.FindAsync(id);
             if (club == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
             ViewData["StadiumId"] = new SelectList(_context.Stadiums, "Id", "Name", club.StadiumId);
             return View(club);
@@ -95,7 +100,8 @@ namespace LigaWeb.Controllers
         {
             if (id != club.Id)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             if (ModelState.IsValid)
@@ -109,7 +115,8 @@ namespace LigaWeb.Controllers
                 {
                     if (!ClubExists(club.Id))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
                     }
                     else
                     {
@@ -127,7 +134,8 @@ namespace LigaWeb.Controllers
         {
             if (id == null || _context.Clubs == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             var club = await _context.Clubs
@@ -135,7 +143,8 @@ namespace LigaWeb.Controllers
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (club == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
             return View(club);

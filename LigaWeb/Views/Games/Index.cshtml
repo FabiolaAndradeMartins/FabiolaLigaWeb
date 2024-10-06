@@ -1,0 +1,116 @@
+﻿@model LigaWeb.Models.GamesIndexViewModel
+
+@{
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+	<a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+	<thead>
+		<tr>
+			<th>
+				Date
+			</th>
+			<th>
+				Stadium
+			</th>
+			<th>
+				Host Club
+			</th>
+			<th>
+				Visitor Club
+			</th>
+
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model.Games)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Date)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Stadium.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.HostClub.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.VisitingClub.Name)
+				</td>
+
+				<td>
+					<a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
+					<a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a> 
+					<a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+				</td>
+
+				
+			</tr>
+		}
+	</tbody>
+</table>
+
+<!-- Gráfico de Barras -->
+<h2>Estatísticas Agregadas de Todos os Jogos</h2>
+<div id="barChart" style="width: 100%; height: 500px;"></div>
+
+
+
+<!-- Inclua o script do Google Charts -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    // Carregar a biblioteca de visualização e os pacotes necessários
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Definir a callback a ser executada quando a biblioteca estiver carregada
+    google.charts.setOnLoadCallback(drawCharts);
+
+    function drawCharts() {
+        drawBarChart();        
+    }
+
+    function drawBarChart() {
+        // Recuperar os dados passados pelo ViewModel para o Gráfico de Barras
+        var data = google.visualization.arrayToDataTable(@Html.Raw(Model.BarChartData));
+
+        // Definir as opções do gráfico
+        var options = {
+            title: 'Estatísticas Agregadas de Todos os Jogos',
+            chartArea: { width: '50%' },
+            hAxis: {
+                title: 'Total',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Estatísticas'
+            },
+            colors: ['#1b9e77', '#d95f02'],
+            legend: { position: 'top', maxLines: 3 },
+            animation: {
+                startup: true,
+                duration: 1000,
+                easing: 'out',
+            },
+            // Responsividade adicional
+            width: '100%',
+            height: 500
+        };
+
+        // Criar e desenhar o Gráfico de Barras
+        var chart = new google.visualization.BarChart(document.getElementById('barChart'));
+        chart.draw(data, options);
+    }
+	
+    // Responsividade: redesenhar os gráficos ao redimensionar a janela
+    window.addEventListener('resize', drawCharts);
+</script>
+

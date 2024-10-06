@@ -1,0 +1,156 @@
+﻿@model LigaWeb.Models.GameDetailsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Game</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Game.Date)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Game.Date)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Game.Stadium)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Game.Stadium.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Game.HostClub)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Game.HostClub.Name)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Game.VisitingClub)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Game.VisitingClub.Name)
+        </dd>
+        @* <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsFouls)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsFouls)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsFouls)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsFouls)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsPenalties)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsPenalties)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsPenalties)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsPenalties)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsYellowCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsYellowCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsYellowCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsYellowCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsRedCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsRedCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsRedCards)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsRedCards)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsGoalKicks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsGoalKicks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsGoalKicks)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsGoalKicks)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.HostsGoals)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.HostsGoals)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.VistorsGoals)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.VistorsGoals)
+        </dd> *@
+    </dl>
+</div>
+
+<!-- Div para o gráfico -->
+<div id="gameChart" style="width: 100%; height: 500px;"></div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Game?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<!-- Inclua o script do Google Charts -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+<script type="text/javascript">
+    // Carregar a biblioteca de visualização e o pacote de barras
+    google.charts.load('current', { 'packages': ['corechart'] });
+
+    // Definir a callback a ser executada quando a biblioteca estiver carregada
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        // Recuperar os dados passados pelo ViewModel
+        var data = google.visualization.arrayToDataTable(@Html.Raw(Model.ChartData));
+
+        // Definir as opções do gráfico
+        var options = {
+            title: 'Game Statistic',
+            chartArea: { width: '50%' },
+            hAxis: {
+                title: 'Total',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Statistics'
+            },
+            colors: ['#1b9e77', '#d95f02']
+        };
+
+        // Criar e desenhar o gráfico
+        var chart = new google.visualization.BarChart(document.getElementById('gameChart'));
+        chart.draw(data, options);
+    }
+
+    // Responsividade: redesenhar o gráfico ao redimensionar a janela
+    window.addEventListener('resize', drawChart);
+</script>

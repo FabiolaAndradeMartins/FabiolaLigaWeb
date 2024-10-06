@@ -1,45 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LigaWeb.Data;
 using LigaWeb.Data.Entities;
+using LigaWeb.Helpers.Impl;
+using LigaWeb.Models;
+using LigaWeb.Data.Repositories.Interfaces;
 
 namespace LigaWeb.Controllers
 {
     public class PlayersController : Controller
-    {
-        private readonly DataContext _context;
+    {        
+        private readonly IPlayerRepository _playerRepository;
+        private readonly IClubRepository _clubRepository;
 
-        public PlayersController(DataContext context)
-        {
-            _context = context;
+        public PlayersController(IPlayerRepository layerRepository)
+        {            
+            _playerRepository = layerRepository;
         }
 
         // GET: Players
         public async Task<IActionResult> Index()
-        {
-            var dataContext = _context.Players.Include(p => p.Club);
-            return View(await dataContext.ToListAsync());
+        {            
+            var result = _playerRepository.GetAll().ToList();
+            return View(result);
         }
 
         // GET: Players/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Players == null)
+            if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" });
             }
 
-            var player = await _context.Players
-                .Include(p => p.Club)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var player = await _playerRepository.GetByIdAsync(id.Value);
+
             if (player == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" });
             }
 
             return View(player);
@@ -47,8 +47,8 @@ namespace LigaWeb.Controllers
 
         // GET: Players/Create
         public IActionResult Create()
-        {
-            ViewData["ClubId"] = new SelectList(_context.Clubs, "Id", "Name");
+        {            
+            ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name");
             return View();
         }
 
@@ -60,29 +60,31 @@ namespace LigaWeb.Controllers
         public async Task<IActionResult> Create([Bind("Id,Name,YearOfBirth,Height,Photo,ClubId")] Player player)
         {
             if (ModelState.IsValid)
-            {
-                _context.Add(player);
-                await _context.SaveChangesAsync();
+            {                
+                await _playerRepository.CreateAsync(player);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClubId"] = new SelectList(_context.Clubs, "Id", "Name", player.ClubId);
+            ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name", player.ClubId);
             return View(player);
         }
 
         // GET: Players/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Players == null)
+            if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" });
             }
 
-            var player = await _context.Players.FindAsync(id);
+            var player = await _playerRepository.GetByIdAsync(id.Value);
             if (player == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" }); ;
             }
-            ViewData["ClubId"] = new SelectList(_context.Clubs, "Id", "Name", player.ClubId);
+            ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name", player.ClubId);
             return View(player);
         }
 
@@ -95,21 +97,22 @@ namespace LigaWeb.Controllers
         {
             if (id != player.Id)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" });
             }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(player);
-                    await _context.SaveChangesAsync();
+                    await _playerRepository.UpdateAsync(player);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PlayerExists(player.Id))
+                    if (!(await PlayerExists(player.Id)))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                        new ErrorNotFoundViewModel { Id = id, Message = "Player not found" });
                     }
                     else
                     {
@@ -118,24 +121,24 @@ namespace LigaWeb.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClubId"] = new SelectList(_context.Clubs, "Id", "Name", player.ClubId);
+            ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name", player.ClubId);
             return View(player);
         }
 
         // GET: Players/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Players == null)
+            if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" }); ;
             }
 
-            var player = await _context.Players
-                .Include(p => p.Club)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var player = await _playerRepository.GetByIdAsync(id.Value);
             if (player == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Player not found" }); ;
             }
 
             return View(player);
@@ -146,23 +149,20 @@ namespace LigaWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Players == null)
-            {
-                return Problem("Entity set 'DataContext.Players'  is null.");
-            }
-            var player = await _context.Players.FindAsync(id);
+            
+            var player = await _playerRepository.GetByIdAsync(id);
+
             if (player != null)
             {
-                _context.Players.Remove(player);
-            }
+                await _playerRepository.DeleteAsync(player);
+            }            
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PlayerExists(int id)
+        private async Task<bool> PlayerExists(int id)
         {
-          return (_context.Players?.Any(e => e.Id == id)).GetValueOrDefault();
+            return await _playerRepository.ExistAsync(id);
         }
     }
 }

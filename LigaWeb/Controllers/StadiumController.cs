@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using LigaWeb.Data.Entities;
 using LigaWeb.Data.Repositories.Interfaces;
+using LigaWeb.Helpers.Impl;
+using LigaWeb.Models;
 
 namespace LigaWeb.Controllers
 {
@@ -28,15 +30,17 @@ namespace LigaWeb.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
-                return NotFound();
+            {                
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel{ Id = id, Message = "Stadium not found"});
             }
 
             var stadium = await _stadiumRepo.GetByIdAsync(id.Value);
                 
             if (stadium == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
             }
 
             return View(stadium);
@@ -73,13 +77,15 @@ namespace LigaWeb.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                     new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
             }
 
             var stadium = await _stadiumRepo.GetByIdAsync(id.Value);
             if (stadium == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
             }
             return View(stadium);
         }
@@ -93,7 +99,8 @@ namespace LigaWeb.Controllers
         {
             if (id != stadium.Id)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
             }
 
             if (ModelState.IsValid)
@@ -106,7 +113,8 @@ namespace LigaWeb.Controllers
                 {
                     if (!(await StadiumExists(stadium.Id)))
                     {
-                        return NotFound();
+                        return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
                     }
                     else
                     {
@@ -123,13 +131,15 @@ namespace LigaWeb.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel { Id = id, Message = "Stadium not found" });
             }
 
             var stadium = await _stadiumRepo.GetByIdAsync(id.Value);
             if (stadium == null)
             {
-                return NotFound();
+                return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
+                    new ErrorNotFoundViewModel{ Id = id, Message = "Stadium not found"});
             }
 
             return View(stadium);

@@ -1,0 +1,107 @@
+﻿@model LigaWeb.Data.Entities.Game
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Game</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Date" class="control-label"></label>
+                <input asp-for="Date" class="form-control" type="datetime-local" />
+                <span asp-validation-for="Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StadiumId" class="control-label"></label>
+                <select asp-for="StadiumId" class="form-control" asp-items="ViewBag.StadiumId"></select>
+                <span asp-validation-for="StadiumId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostClubId" class="control-label"></label>
+                <select asp-for="HostClubId" class="form-control" asp-items="ViewBag.HostClubId"></select>
+                <span asp-validation-for="HostClubId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VisitingClubId" class="control-label"></label>
+                <select asp-for="VisitingClubId" class="form-control" asp-items="ViewBag.VisitingClubId"></select>
+                <span asp-validation-for="VisitingClubId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsFouls" class="control-label"></label>
+                <input asp-for="HostsFouls" class="form-control" />
+                <span asp-validation-for="HostsFouls" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsFouls" class="control-label"></label>
+                <input asp-for="VistorsFouls" class="form-control" />
+                <span asp-validation-for="VistorsFouls" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsPenalties" class="control-label"></label>
+                <input asp-for="HostsPenalties" class="form-control" />
+                <span asp-validation-for="HostsPenalties" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsPenalties" class="control-label"></label>
+                <input asp-for="VistorsPenalties" class="form-control" />
+                <span asp-validation-for="VistorsPenalties" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsYellowCards" class="control-label"></label>
+                <input asp-for="HostsYellowCards" class="form-control" />
+                <span asp-validation-for="HostsYellowCards" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsYellowCards" class="control-label"></label>
+                <input asp-for="VistorsYellowCards" class="form-control" />
+                <span asp-validation-for="VistorsYellowCards" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsRedCards" class="control-label"></label>
+                <input asp-for="HostsRedCards" class="form-control" />
+                <span asp-validation-for="HostsRedCards" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsRedCards" class="control-label"></label>
+                <input asp-for="VistorsRedCards" class="form-control" />
+                <span asp-validation-for="VistorsRedCards" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsGoalKicks" class="control-label"></label>
+                <input asp-for="HostsGoalKicks" class="form-control" />
+                <span asp-validation-for="HostsGoalKicks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsGoalKicks" class="control-label"></label>
+                <input asp-for="VistorsGoalKicks" class="form-control" />
+                <span asp-validation-for="VistorsGoalKicks" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="HostsGoals" class="control-label"></label>
+                <input asp-for="HostsGoals" class="form-control" />
+                <span asp-validation-for="HostsGoals" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VistorsGoals" class="control-label"></label>
+                <input asp-for="VistorsGoals" class="form-control" />
+                <span asp-validation-for="VistorsGoals" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
