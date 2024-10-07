@@ -20,7 +20,7 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="YearOfBirth" class="control-label"></label>
+                <label asp-for="YearOfBirth" class="control-label">Year Of Birth</label>
                 <input asp-for="YearOfBirth" class="form-control" />
                 <span asp-validation-for="YearOfBirth" class="text-danger"></span>
             </div>
@@ -35,18 +35,17 @@
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ClubId" class="control-label"></label>
+                <label asp-for="ClubId" class="control-label">Club</label>
                 <select asp-for="ClubId" class="form-control" asp-items="ViewBag.ClubId"></select>
                 <span asp-validation-for="ClubId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save" class="btn btn-primary" /> |
+                <a class="btn btn-secondary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 

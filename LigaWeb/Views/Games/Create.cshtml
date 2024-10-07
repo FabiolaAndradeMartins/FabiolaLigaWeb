@@ -19,85 +19,84 @@
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="StadiumId" class="control-label"></label>
+                <label asp-for="StadiumId" class="control-label">Stadium</label>
                 <select asp-for="StadiumId" class ="form-control" asp-items="ViewBag.StadiumId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="HostClubId" class="control-label"></label>
+                <label asp-for="HostClubId" class="control-label">Host CLub</label>
                 <select asp-for="HostClubId" class ="form-control" asp-items="ViewBag.HostClubId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="VisitingClubId" class="control-label"></label>
+                <label asp-for="VisitingClubId" class="control-label">Visitor Club</label>
                 <select asp-for="VisitingClubId" class ="form-control" asp-items="ViewBag.VisitingClubId"></select>
             </div>
             <div class="form-group">
-                <label asp-for="HostsFouls" class="control-label"></label>
+                <label asp-for="HostsFouls" class="control-label">Hosts Fouls</label>
                 <input asp-for="HostsFouls" class="form-control" />
                 <span asp-validation-for="HostsFouls" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsFouls" class="control-label"></label>
+                <label asp-for="VistorsFouls" class="control-label">Visitors Fouls</label>
                 <input asp-for="VistorsFouls" class="form-control" />
                 <span asp-validation-for="VistorsFouls" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HostsPenalties" class="control-label"></label>
+                <label asp-for="HostsPenalties" class="control-label">Hosts Penalties</label>
                 <input asp-for="HostsPenalties" class="form-control" />
                 <span asp-validation-for="HostsPenalties" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsPenalties" class="control-label"></label>
+                <label asp-for="VistorsPenalties" class="control-label">Visitors Penalties</label>
                 <input asp-for="VistorsPenalties" class="form-control" />
                 <span asp-validation-for="VistorsPenalties" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HostsYellowCards" class="control-label"></label>
+                <label asp-for="HostsYellowCards" class="control-label">Hosts Yellow Cards</label>
                 <input asp-for="HostsYellowCards" class="form-control" />
                 <span asp-validation-for="HostsYellowCards" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsYellowCards" class="control-label"></label>
+                <label asp-for="VistorsYellowCards" class="control-label">Visitors Yellow Cards</label>
                 <input asp-for="VistorsYellowCards" class="form-control" />
                 <span asp-validation-for="VistorsYellowCards" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HostsRedCards" class="control-label"></label>
+                <label asp-for="HostsRedCards" class="control-label">Hosts Red Cards</label>
                 <input asp-for="HostsRedCards" class="form-control" />
                 <span asp-validation-for="HostsRedCards" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsRedCards" class="control-label"></label>
+                <label asp-for="VistorsRedCards" class="control-label">Visitors Red Cards</label>
                 <input asp-for="VistorsRedCards" class="form-control" />
                 <span asp-validation-for="VistorsRedCards" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HostsGoalKicks" class="control-label"></label>
+                <label asp-for="HostsGoalKicks" class="control-label">Hosts Goal Kicks</label>
                 <input asp-for="HostsGoalKicks" class="form-control" />
                 <span asp-validation-for="HostsGoalKicks" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsGoalKicks" class="control-label"></label>
+                <label asp-for="VistorsGoalKicks" class="control-label">Visitors Goal Kicks</label>
                 <input asp-for="VistorsGoalKicks" class="form-control" />
                 <span asp-validation-for="VistorsGoalKicks" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="HostsGoals" class="control-label"></label>
+                <label asp-for="HostsGoals" class="control-label">Hosts Goals</label>
                 <input asp-for="HostsGoals" class="form-control" />
                 <span asp-validation-for="HostsGoals" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="VistorsGoals" class="control-label"></label>
+                <label asp-for="VistorsGoals" class="control-label">Visitors Goals</label>
                 <input asp-for="VistorsGoals" class="form-control" />
                 <span asp-validation-for="VistorsGoals" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" /> |
+                <a class="btn btn-secondary" asp-action="Index">Back to List</a>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
 

@@ -7,6 +7,138 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/LigaWeb.styles.css" asp-append-version="true" />
+    <style>
+        body {
+            background-color: #f0f0f0; 
+        }  
+        .home-link {
+            background-color: #ff5733; /* Cor laranja */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .home-link:hover {
+                background-color: #e04a29; /* Cor laranja escura no hover */
+            }
+
+        /* Link Privacy */
+        .privacy-link {
+            background-color: #28a745; /* Cor verde */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .privacy-link:hover {
+                background-color: #218838; /* Cor verde escura no hover */
+            }
+
+        /* Link Stadium */
+        .stadium-link {
+            background-color: #007bff; /* Cor azul */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .stadium-link:hover {
+                background-color: #0056b3; /* Cor azul escura no hover */
+            }
+
+        /* Link Clubs */
+        .clubs-link {
+            background-color: #ffc107; /* Cor amarela */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .clubs-link:hover {
+                background-color: #e0a800; /* Cor amarela escura no hover */
+            }
+
+        /* Link Players */
+        .players-link {
+            background-color: #17a2b8; /* Cor ciano */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .players-link:hover {
+                background-color: #138496; /* Cor ciano escura no hover */
+            }
+
+        /* Link Games */
+        .games-link {
+            background-color: #6f42c1; /* Cor roxa */
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .games-link:hover {
+                background-color: #59359a; /* Cor roxa escura no hover */
+            }
+
+        .user-link {
+            background-color: #28a745; /* Cor verde para o nome do usuário */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .user-link:hover {
+                background-color: #218838; /* Cor verde escura no hover */
+            }
+
+        /* Estilo do link Logout */
+        .logout-link {
+            background-color: #dc3545; /* Cor vermelha para Logout */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .logout-link:hover {
+                background-color: #c82333; /* Cor vermelha mais escura no hover */
+            }
+
+        /* Estilo do link Login */
+        .login-link {
+            background-color: #007bff; /* Cor azul para Login */
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+            .login-link:hover {
+                background-color: #0056b3; /* Cor azul escura no hover */
+            }
+
+        .nav-item {
+            margin-right: 10px; /* Espaço entre os itens de navegação */
+        }
+    </style>   
 </head>
 <body>
     <header>
@@ -20,38 +152,38 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link home-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link privacy-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Stadium" asp-action="Index">Stadium</a>
+                            <a class="nav-link stadium-link" asp-area="" asp-controller="Stadium" asp-action="Index">Stadium</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Clubs" asp-action="Index">Clubs</a>
+                            <a class="nav-link clubs-link" asp-area="" asp-controller="Clubs" asp-action="Index">Clubs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
+                            <a class="nav-link players-link" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
+                            <a class="nav-link games-link" asp-area="" asp-controller="Games" asp-action="Index">Games</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         @if(this.User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a>
+                                <a class="nav-link user-link" asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
+                                <a class="nav-link logout-link" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="nav-link login-link" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                         }
                     </ul>

@@ -32,13 +32,13 @@ namespace LigaWeb.Controllers
 			// Preparar os dados para o Gráfico de Barras
 			var barChartData = new List<object>
 		    {
-			    new object[] { "Estatística", "Mandante", "Visitante" },
-			    new object[] { "Faltas", games.Sum(g => g.HostsFouls), games.Sum(g => g.VistorsFouls) },
-			    new object[] { "Penaltis", games.Sum(g => g.HostsPenalties), games.Sum(g => g.VistorsPenalties) },
-			    new object[] { "Cartões Amarelos", games.Sum(g => g.HostsYellowCards), games.Sum(g => g.VistorsYellowCards) },
-			    new object[] { "Cartões Vermelhos", games.Sum(g => g.HostsRedCards), games.Sum(g => g.VistorsRedCards) },
-			    new object[] { "Tiros de Meta", games.Sum(g => g.HostsGoalKicks), games.Sum(g => g.VistorsGoalKicks) },
-			    new object[] { "Gols", games.Sum(g => g.HostsGoals), games.Sum(g => g.VistorsGoals) }
+			    new object[] { "Statistic", "Host", "Visitor" },
+			    new object[] { "Faults", games.Sum(g => g.HostsFouls), games.Sum(g => g.VistorsFouls) },
+			    new object[] { "Penalties", games.Sum(g => g.HostsPenalties), games.Sum(g => g.VistorsPenalties) },
+			    new object[] { "Yellow Cards", games.Sum(g => g.HostsYellowCards), games.Sum(g => g.VistorsYellowCards) },
+			    new object[] { "Red Cards", games.Sum(g => g.HostsRedCards), games.Sum(g => g.VistorsRedCards) },
+			    new object[] { "Goal Kicks", games.Sum(g => g.HostsGoalKicks), games.Sum(g => g.VistorsGoalKicks) },
+			    new object[] { "Goals", games.Sum(g => g.HostsGoals), games.Sum(g => g.VistorsGoals) }
 		    };
 
 

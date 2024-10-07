@@ -13,9 +13,10 @@ namespace LigaWeb.Controllers
         private readonly IPlayerRepository _playerRepository;
         private readonly IClubRepository _clubRepository;
 
-        public PlayersController(IPlayerRepository layerRepository)
-        {            
+        public PlayersController(IPlayerRepository layerRepository, IClubRepository clubRepository)
+        {
             _playerRepository = layerRepository;
+            _clubRepository = clubRepository;
         }
 
         // GET: Players
