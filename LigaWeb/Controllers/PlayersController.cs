@@ -5,6 +5,7 @@ using LigaWeb.Data.Entities;
 using LigaWeb.Helpers.Impl;
 using LigaWeb.Models;
 using LigaWeb.Data.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
@@ -20,6 +21,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Players
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Index()
         {            
             var result = _playerRepository.GetAll().ToList();
@@ -27,6 +29,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Players/Details/5
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +50,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Players/Create
+        [Authorize(Roles = "Club")]
         public IActionResult Create()
         {            
             ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name");
@@ -58,6 +62,7 @@ namespace LigaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Create([Bind("Id,Name,YearOfBirth,Height,Photo,ClubId")] Player player)
         {
             if (ModelState.IsValid)
@@ -71,6 +76,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Players/Edit/5
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -94,6 +100,7 @@ namespace LigaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,YearOfBirth,Height,Photo,ClubId")] Player player)
         {
             if (id != player.Id)
@@ -127,6 +134,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Players/Delete/5
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -148,6 +156,7 @@ namespace LigaWeb.Controllers
         // POST: Players/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Club")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             

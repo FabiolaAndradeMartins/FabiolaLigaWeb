@@ -2,6 +2,7 @@
 using LigaWeb.Helpers;
 using LigaWeb.Helpers.Interfaces;
 using LigaWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -51,7 +52,7 @@ namespace LigaWeb.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Idenx", "Home");
+                return RedirectToAction("Index", "Home");
             }
 
             return View();
@@ -184,12 +185,14 @@ namespace LigaWeb.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin, Club, Employee")]
         public IActionResult RecoverPassword()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Club, Employee")]
         public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -289,5 +292,12 @@ namespace LigaWeb.Controllers
             return View(model);
         }
 
+        [HttpGet]
+
+        public IActionResult AccessDenied(string returnUrl)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
     }
 }

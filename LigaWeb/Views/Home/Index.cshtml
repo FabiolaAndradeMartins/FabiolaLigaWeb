@@ -1,10 +1,49 @@
-﻿@{
+﻿@model IEnumerable<dynamic>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <img src="~/imagens/bola.jpeg" alt="Bola de Futebol com Bandeiras de Todos os Países" class="img-fluid" />
+
 </div>
+
+<h2>Estatísticas dos Clubes</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Clube</th>
+            <th>Pontos</th>
+            <th>Gols Marcados</th>
+            <th>Gols Sofridos</th>
+            <th>Cartões Amarelos</th>
+            <th>Cartões Vermelhos</th>
+            <th>Jogos Realizados</th>
+            <th>Jogos a Realizar</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var stat in Model)
+        {
+            <tr>
+                <td>@stat.Club.Name</td>
+                <td>@stat.Points</td>
+                <td>@stat.GoalsScored</td>
+                <td>@stat.GoalsConceded</td>
+                <td>@stat.YellowCards</td>
+                <td>@stat.RedCards</td>
+                <td>@stat.GamesPlayed</td>
+                <td>@stat.GamesToPlay</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
 
 

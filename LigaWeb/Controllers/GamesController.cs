@@ -7,6 +7,7 @@ using LigaWeb.Models;
 using Newtonsoft.Json;
 using LigaWeb.Data.Repositories.Interfaces;
 using LigaWeb.Helpers.Impl;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
@@ -24,6 +25,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Games
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Index()
         {
             var games = _gameRepository
@@ -59,6 +61,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Games/Details/5
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -98,6 +101,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Games/Create
+        [Authorize(Roles = "Employee")]
         public IActionResult Create()
         {
             CreateViewBagDropDown();
@@ -120,6 +124,7 @@ namespace LigaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Create([Bind("Id,Date,StadiumId,HostClubId,VisitingClubId,HostsFouls,VistorsFouls,HostsPenalties,VistorsPenalties,HostsYellowCards,VistorsYellowCards,HostsRedCards,VistorsRedCards,HostsGoalKicks,VistorsGoalKicks,HostsGoals,VistorsGoals")] Game game)
         {
             if (ModelState.IsValid)
@@ -134,6 +139,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Games/Edit/5
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -159,6 +165,7 @@ namespace LigaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Date,StadiumId,HostClubId,VisitingClubId,HostsFouls,VistorsFouls,HostsPenalties,VistorsPenalties,HostsYellowCards,VistorsYellowCards,HostsRedCards,VistorsRedCards,HostsGoalKicks,VistorsGoalKicks,HostsGoals,VistorsGoals")] Game game)
         {
             if (id != game.Id)
@@ -194,6 +201,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Games/Delete/5
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -217,6 +225,7 @@ namespace LigaWeb.Controllers
         // POST: Games/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
 
