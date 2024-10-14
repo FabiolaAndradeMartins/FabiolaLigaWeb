@@ -93,6 +93,22 @@ builder.Services.AddSwaggerGen(c =>
     c.AddSecurityRequirement(securityRequirement);
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	// Caminho para a página de login
+	options.LoginPath = "/Account/Login";
+
+	// Caminho para a página de acesso negado
+	options.AccessDeniedPath = "/Home/AccessDenied";
+
+	// Redireciona para a página de acesso negado quando o usuário não tiver as permissões necessárias
+	options.Events.OnRedirectToAccessDenied = context =>
+	{
+		context.Response.Redirect("/Home/AccessDenied");
+		return Task.CompletedTask;
+	};
+});
+
 
 var app = builder.Build();
 

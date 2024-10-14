@@ -292,12 +292,6 @@ namespace LigaWeb.Controllers
             return View(model);
         }
 
-        [HttpGet]
-
-        public IActionResult AccessDenied(string returnUrl)
-        {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
-        }
+        
     }
 }
