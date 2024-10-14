@@ -1,0 +1,39 @@
+﻿@model LigaWeb.Data.Entities.User
+
+@{
+    ViewData["Title"] = "User Deleted";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>User Deleted</h1>
+
+<p>The following user has been successfully deleted:</p>
+
+<div>
+    <h4>User Details</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Full Name
+        </dt>
+        <dd class="col-sm-10">
+            @Model.FullName
+        </dd>
+        <dt class="col-sm-2">
+            Username
+        </dt>
+        <dd class="col-sm-10">
+            @Model.UserName
+        </dd>
+        <dt class="col-sm-2">
+            Email
+        </dt>
+        <dd class="col-sm-10">
+            @Model.Email
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a class="btn btn-primary" asp-action="Index">Back to User List</a>
+</div>

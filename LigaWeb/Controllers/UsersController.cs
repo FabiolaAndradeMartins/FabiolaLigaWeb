@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LigaWeb.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -22,6 +22,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Users
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             // Obtenha todos os usuários
@@ -45,7 +46,9 @@ namespace LigaWeb.Controllers
             return View(userRolesViewModel);
         }
 
+
         // GET: Users/Create
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
@@ -55,6 +58,7 @@ namespace LigaWeb.Controllers
         // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateUserViewModel model)
         {
             if (ModelState.IsValid)
@@ -90,6 +94,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Users/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -121,6 +126,7 @@ namespace LigaWeb.Controllers
         // POST: Users/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(EditUserViewModel model)
         {
             if (ModelState.IsValid)
@@ -162,6 +168,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Users/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -181,6 +188,7 @@ namespace LigaWeb.Controllers
         // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -193,7 +201,8 @@ namespace LigaWeb.Controllers
 
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(Index));
+                // Redireciona para uma view de confirmação com os dados do usuário deletado
+                return View("DeleteConfirmed", user); // Retorna a view com os dados do usuário deletado
             }
 
             foreach (var error in result.Errors)

@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
-   
-    public class ClubsController : Controller
+	[Authorize(Roles = "Employee")]
+	public class ClubsController : Controller
     {
         private readonly DataContext _context;
         private readonly IClubRepository _clubRepository;

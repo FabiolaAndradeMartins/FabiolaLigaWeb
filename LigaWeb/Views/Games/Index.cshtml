@@ -10,6 +10,15 @@
 <p>
 	<a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
+
+@if (User.IsInRole("Employee")) // Verifica se o usuário está na role "Employee"
+{
+    <a class="btn btn-info" asp-controller="Games" asp-action="Index">Games</a>
+}
+else
+{
+    <a class="btn btn-info" asp-controller="Games" asp-action="Index" onclick="return false;" title="Access Denied">Games (Access Denied)</a>
+}
 <table class="table">
 	<thead>
 		<tr>

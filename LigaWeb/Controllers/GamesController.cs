@@ -11,9 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
-    
-    public class GamesController : Controller
+	[Authorize(Roles = "Employee")]
+	public class GamesController : Controller
     {        
+
         private readonly IClubRepository _clubRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IStadiumRepository _stadiumRepository;
