@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
+    
     public class GamesController : Controller
     {        
         private readonly IClubRepository _clubRepository;

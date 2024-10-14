@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
+   
     public class ClubsController : Controller
     {
         private readonly DataContext _context;
@@ -29,27 +30,35 @@ namespace LigaWeb.Controllers
             return View(await dataContext.ToListAsync());
         }
 
+        
+
         // GET: Clubs/Details/5
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")] // Mantenha essa autorização se for necessária
         public async Task<IActionResult> Details(int? id)
         {
+            // Verifica se o ID é nulo ou se não há clubes no contexto
             if (id == null || _context.Clubs == null)
             {
                 return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
                     new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
+            // Busca o clube no banco de dados, incluindo os dados do estádio
             var club = await _context.Clubs
                 .Include(c => c.Stadium)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            // Se o clube não for encontrado, retorna a página de erro personalizado
             if (club == null)
             {
                 return new NotFoundViewResult("~/Views/Error/ErrorNotFound.cshtml",
                     new ErrorNotFoundViewModel { Id = id, Message = "Club not found" });
             }
 
+            // Retorna a view com os dados do clube
             return View(club);
         }
+
 
         // GET: Clubs/Create
         [Authorize(Roles = "Admin")]

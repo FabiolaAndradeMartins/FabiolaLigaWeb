@@ -8,25 +8,31 @@
 <h1>Index</h1>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
+    @if (User.IsInRole("Admin") || User.IsInRole("Club"))
+    {
+        <a class="btn btn-primary" asp-action="Create">Create New</a>
+    }    
 </p>
+
+<a href="@Url.Action("Index", "Home")" class="btn btn-warning">Back to Home</a>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.YearOfBirth)
+                YearOfBirth
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Height)
+               Height
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Photo)
+                Photo
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Club)
+                Club
             </th>
             <th></th>
         </tr>
@@ -35,24 +41,30 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Name)
+               @item.Name
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.YearOfBirth)
+                @item.YearOfBirth
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Height)
+                @item.Height
             </td>
             <td>
                 <img src="@item.Photo" alt="@item.Name" width="50px" height="50px" />
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Club.Name)
+                @item.Club.Name
             </td>
-            <td>
-                    <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+               
+                <td>
+                   
+
+                    @if (User.IsInRole("Admin") || User.IsInRole("Club") )
+                    {
+                        <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
             </td>
         </tr>
 }

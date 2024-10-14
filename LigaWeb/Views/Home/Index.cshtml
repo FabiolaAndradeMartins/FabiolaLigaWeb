@@ -12,26 +12,30 @@
 
 </div>
 
-<h2>Estatísticas dos Clubes</h2>
+<h2>Statistics</h2>
 
-<table class="table">
+<table class="table  text-center mx-auto">
     <thead>
         <tr>
-            <th>Clube</th>
-            <th>Pontos</th>
-            <th>Gols Marcados</th>
-            <th>Gols Sofridos</th>
-            <th>Cartões Amarelos</th>
-            <th>Cartões Vermelhos</th>
-            <th>Jogos Realizados</th>
-            <th>Jogos a Realizar</th>
+            <th>Club Name</th>
+            <th>Points</th>
+            <th>Goals Scored</th>
+            <th>Goals Conceded</th>
+            <th>Yellow Cards</th>
+            <th>Red Cards</th>
+            <th>Games Played</th>
+            <th>Games ToPlay</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var stat in Model)
         {
             <tr>
-                <td>@stat.Club.Name</td>
+                <td class="align-middle">
+                    <a href="@Url.Action("Details", "Clubs", new { id = stat.Club.Id })">
+                        @stat.Club.Name
+                    </a> 
+                </td>
                 <td>@stat.Points</td>
                 <td>@stat.GoalsScored</td>
                 <td>@stat.GoalsConceded</td>

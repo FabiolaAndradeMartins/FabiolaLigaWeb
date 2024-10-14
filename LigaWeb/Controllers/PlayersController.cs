@@ -6,6 +6,7 @@ using LigaWeb.Helpers.Impl;
 using LigaWeb.Models;
 using LigaWeb.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using LigaWeb.Data;
 
 namespace LigaWeb.Controllers
 {
@@ -13,23 +14,25 @@ namespace LigaWeb.Controllers
     {        
         private readonly IPlayerRepository _playerRepository;
         private readonly IClubRepository _clubRepository;
+        private readonly DataContext _context;
 
-        public PlayersController(IPlayerRepository layerRepository, IClubRepository clubRepository)
+        public PlayersController(IPlayerRepository layerRepository, IClubRepository clubRepository, DataContext context)
         {
             _playerRepository = layerRepository;
             _clubRepository = clubRepository;
+            _context = context;
         }
 
         // GET: Players
-        [Authorize(Roles = "Club")]
-        public async Task<IActionResult> Index()
-        {            
-            var result = _playerRepository.GetAll().ToList();
-            return View(result);
-        }
+        //[Authorize(Roles = "Club")]
+        //public async Task<IActionResult> Index()
+        //{            
+        //    var result = _playerRepository.GetAll().ToList();
+        //    return View(result);
+        //}
 
         // GET: Players/Details/5
-        [Authorize(Roles = "Club")]
+        //[Authorize(Roles = "Club")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -47,6 +50,25 @@ namespace LigaWeb.Controllers
             }
 
             return View(player);
+        }
+
+        // GET: Players/Index?clubId=5
+        public async Task<IActionResult> Index(int? clubId)
+        {
+            List<Player> players = new List<Player>();           
+
+            if (clubId != null)
+                players = await _context.Players
+                    .Include(p => p.Club)
+                    .Where(x => x.ClubId == clubId)
+                    .ToListAsync();
+            else
+                players = await _context.Players
+                    .Include(p => p.Club)
+                    .ToListAsync();
+
+
+            return View(players);
         }
 
         // GET: Players/Create

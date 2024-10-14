@@ -32,8 +32,15 @@
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Photo)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Photo)
+        <dd class="col-sm-10">
+            @if (!string.IsNullOrEmpty(Model.Photo))
+            {
+                <img src="@Model.Photo" alt="Image of @Model.Name" style="max-width: 200px; max-height: 200px;" />
+            }
+            else
+            {
+                <span>No image available</span>
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Club)
@@ -44,6 +51,10 @@
     </dl>
 </div>
 <div>
-    <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+    }
+    <a href="@Url.Action("Details", "Clubs", new { id = Model.ClubId })" class="btn btn-info">Back to Club</a>
 </div>
