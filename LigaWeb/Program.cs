@@ -139,15 +139,15 @@ if (!app.Environment.IsDevelopment())
 }
 
 // Ativar Swagger somente em desenvolvimento
-if (app.Environment.IsDevelopment())
-{
+
+
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "LigaWeb API v1");
         c.RoutePrefix = "swagger"; // Swagger acessível via /swagger
     });
-}
+
 
 // Middleware de redirecionamento personalizado
 app.Use(async (context, next) =>

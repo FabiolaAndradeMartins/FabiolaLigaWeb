@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace LigaWeb.Controllers
 {
-	[Authorize(Roles = "Employee")]
+	
 	public class ClubsController : Controller
     {
         private readonly DataContext _context;
@@ -23,14 +23,12 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Clubs
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles ="Admin, Club")]
         public async Task<IActionResult> Index()
         {
             var dataContext = _context.Clubs.Include(c => c.Stadium);
             return View(await dataContext.ToListAsync());
-        }
-
-        
+        }        
 
         // GET: Clubs/Details/5
         //[Authorize(Roles = "Admin")] // Mantenha essa autorização se for necessária
@@ -61,7 +59,7 @@ namespace LigaWeb.Controllers
 
 
         // GET: Clubs/Create
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Club")]
         public IActionResult Create()
         {
             ViewData["StadiumId"] = new SelectList(_context.Stadiums, "Id", "Name");
@@ -73,7 +71,7 @@ namespace LigaWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Club")]
         public async Task<IActionResult> Create(Club club)
         {
             if (ModelState.IsValid)
