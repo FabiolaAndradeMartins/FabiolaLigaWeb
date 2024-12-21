@@ -15,5 +15,9 @@ namespace LigaWeb.Data.Entities
         // FK para o clube (opcional)
         public int? ClubId { get; set; }
         public Club? Club { get; set; }
+
+        // Caminho da foto do usuário
+        [StringLength(400)]
+        public string? PhotoPath { get; set; }
     }
 }

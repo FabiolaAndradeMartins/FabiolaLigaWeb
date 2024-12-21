@@ -20,5 +20,7 @@ namespace LigaWeb.Models
         public string UserName { get; set; }
 
         public string Role { get; set; } // Role atual do usuário
+
+        public string? PhotoPath { get; set; }
     }
 }

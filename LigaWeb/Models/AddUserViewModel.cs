@@ -34,6 +34,8 @@ namespace LigaWeb.Models
         public string RoleId { get; set; }
 
         public List<SelectListItem> Roles { get; set; }
+
+        public string? PhotoPath { get; set; }
     }
 
 }

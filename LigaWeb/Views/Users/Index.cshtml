@@ -19,6 +19,7 @@
             <th>Username</th>
             <th>Email</th>
             <th>Role</th>
+            <th>Photo</th>
             <th></th>
         </tr>
     </thead>
@@ -29,6 +30,7 @@
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
                 <td>@user.Roles</td>
+                <td><img src="@user.PhotoPath" alt="User Photo" style="max-width: 150px;" /></td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Delete</a>

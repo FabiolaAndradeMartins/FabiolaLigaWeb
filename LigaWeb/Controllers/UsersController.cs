@@ -39,7 +39,8 @@ namespace LigaWeb.Controllers
                     UserId = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
-                    Roles = string.Join(", ", roles) // Concatenar as roles em uma string
+                    Roles = string.Join(", ", roles), // Concatenar as roles em uma string
+                    PhotoPath = user.PhotoPath
                 });
             }
 
@@ -59,7 +60,7 @@ namespace LigaWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(CreateUserViewModel model)
+        public async Task<IActionResult> Create(CreateUserViewModel model, IFormFile? photo)
         {
             if (ModelState.IsValid)
             {
@@ -70,6 +71,26 @@ namespace LigaWeb.Controllers
                     FirstName = model.FirstName,
                     LastName = model.LastName
                 };
+
+                if (photo != null)
+                {
+                    // Salvar a foto no diretório de uploads
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Certifique-se de que o diretório existe
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // Salvar o arquivo
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(stream);
+                    }
+
+                    // Atualizar o caminho no modelo
+                    user.PhotoPath = $"/uploads/{uniqueFileName}";
+                }
 
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -127,7 +148,7 @@ namespace LigaWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(EditUserViewModel model)
+        public async Task<IActionResult> Edit(EditUserViewModel model, IFormFile? photo)
         {
             if (ModelState.IsValid)
             {
@@ -141,6 +162,26 @@ namespace LigaWeb.Controllers
                 user.LastName = model.LastName;
                 user.Email = model.Email;
                 user.UserName = model.UserName;
+
+                if (photo != null)
+                {
+                    // Salvar a foto no diretório de uploads
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Certifique-se de que o diretório existe
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // Salvar o arquivo
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(stream);
+                    }
+
+                    // Atualizar o caminho no modelo
+                    user.PhotoPath = $"/uploads/{uniqueFileName}";
+                }
 
                 var result = await _userManager.UpdateAsync(user);
 

@@ -80,7 +80,7 @@ namespace LigaWeb.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register(RegisterNewUserViewModel model)
+        public async Task<IActionResult> Register(RegisterNewUserViewModel model, IFormFile? photo)
         {
             if (ModelState.IsValid)
             {
@@ -94,6 +94,26 @@ namespace LigaWeb.Controllers
                         Email = model.Username,
                         UserName = model.Username
                     };
+
+                    if (photo != null)
+                    {
+                        // Salvar a foto no diretório de uploads
+                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                        // Certifique-se de que o diretório existe
+                        Directory.CreateDirectory(uploadsFolder);
+
+                        // Salvar o arquivo
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await photo.CopyToAsync(stream);
+                        }
+
+                        // Atualizar o caminho no modelo
+                        user.PhotoPath = $"/uploads/{uniqueFileName}";
+                    }
 
                     var result = await _userHelper.AddUserAsync(user, model.Password);
                     if (result != IdentityResult.Success)
@@ -364,10 +384,33 @@ namespace LigaWeb.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> AddUser(AddUserViewModel model)
+        public async Task<IActionResult> AddUser(AddUserViewModel model, IFormFile? photo)
         {
+
             if (!ModelState.IsValid)
             {
+
+                if (photo != null)
+                {
+                    // Salvar a foto no diretório de uploads
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    // Certifique-se de que o diretório existe
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    // Salvar o arquivo
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await photo.CopyToAsync(stream);
+                    }
+
+                    // Atualizar o caminho no modelo
+                    model.PhotoPath = $"/uploads/{uniqueFileName}";
+                }
+
+
                 var clubs = await _context.Clubs.ToListAsync();
                 var roles = await _userHelper.GetAllRolesAsync();
 
@@ -391,7 +434,8 @@ namespace LigaWeb.Controllers
                 LastName = model.LastName,
                 Email = model.Email,
                 UserName = model.Email,
-                ClubId = model.ClubId
+                ClubId = model.ClubId,
+                PhotoPath = model.PhotoPath
             };
 
             var result = await _userHelper.AddUserAsync(user, model.Password);
