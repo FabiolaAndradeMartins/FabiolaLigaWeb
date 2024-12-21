@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace LigaWeb.Data
 {
@@ -31,6 +32,12 @@ namespace LigaWeb.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);
+
+            builder.Entity<User>()
+                .HasOne(u => u.Club)
+                .WithMany()
+                .HasForeignKey(u => u.ClubId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Seed for Roles and Users
             /* 

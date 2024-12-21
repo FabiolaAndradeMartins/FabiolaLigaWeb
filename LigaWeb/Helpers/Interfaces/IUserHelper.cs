@@ -35,5 +35,8 @@ namespace LigaWeb.Helpers.Interfaces
         Task<IdentityResult> ConfirmEmailAsync(User user, string token);
 
         Task<User> GetUserByIdAsync(string userId);
+
+        // Método para obter todas as roles
+        Task<List<string>> GetAllRolesAsync();
     }
 }

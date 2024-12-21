@@ -3,7 +3,14 @@
 <h2>Manage Users</h2>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New User</a>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="AddUser" asp-controller="Account" class="btn btn-primary">Create New User</a>
+    }
+    else
+    {
+        <a asp-action="Create" class="btn btn-primary">Create New User</a>
+    }
 </p>
 
 <table class="table">

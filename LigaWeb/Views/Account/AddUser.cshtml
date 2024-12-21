@@ -1,0 +1,51 @@
+﻿@model AddUserViewModel
+
+@{
+    ViewData["Title"] = "Add User";
+}
+
+<h2>Add User</h2>
+
+<form asp-action="AddUser" method="post">
+    <div class="form-group">
+        <label asp-for="FirstName"></label>
+        <input asp-for="FirstName" class="form-control" />
+        <span asp-validation-for="FirstName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName"></label>
+        <input asp-for="LastName" class="form-control" />
+        <span asp-validation-for="LastName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" type="password" class="form-control" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClubId"></label>
+        <select asp-for="ClubId" class="form-control" asp-items="Model.Clubs">
+            <option value="">-- Select a Club --</option>
+        </select>
+        <span asp-validation-for="ClubId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RoleId"></label>
+        <select asp-for="RoleId" class="form-control" asp-items="Model.Roles">
+            <option value="">-- Select a Role --</option>
+        </select>
+        <span asp-validation-for="RoleId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add User</button>
+</form>

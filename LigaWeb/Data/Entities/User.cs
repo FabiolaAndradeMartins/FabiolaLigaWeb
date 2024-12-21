@@ -11,5 +11,9 @@ namespace LigaWeb.Data.Entities
 
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
+
+        // FK para o clube (opcional)
+        public int? ClubId { get; set; }
+        public Club? Club { get; set; }
     }
 }

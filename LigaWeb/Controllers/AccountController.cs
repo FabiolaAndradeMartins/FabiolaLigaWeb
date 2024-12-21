@@ -1,10 +1,14 @@
-﻿using LigaWeb.Data.Entities;
+﻿using LigaWeb.Data;
+using LigaWeb.Data.Entities;
 using LigaWeb.Helpers;
+using LigaWeb.Helpers.Impl;
 using LigaWeb.Helpers.Interfaces;
 using LigaWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,15 +21,21 @@ namespace LigaWeb.Controllers
         private readonly IUserHelper _userHelper;
         private readonly IMailHelper _mailHelper;
         private readonly IConfiguration _configuration;
+        private readonly DataContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
         public AccountController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            DataContext context,
+            RoleManager<IdentityRole> roleManager)
         {
             this._userHelper = userHelper;
             this._mailHelper = mailHelper;
             this._configuration = configuration;
+            _context = context;
+            _roleManager = roleManager;
         }
 
         [HttpPost]
@@ -92,23 +102,37 @@ namespace LigaWeb.Controllers
                         return View(model);
                     }
 
-                    var loginViewModel = new LoginViewModel
-                    {
-                        Password = model.Password,
-                        RememberMe = false,
-                        Username = model.Username,
-                    };
+                    // Associar o usuário à Role "Anonimous"
+                    await _userHelper.AddUserToRoleAsync(user, "Anonimous");
 
-                    var result2 = await _userHelper.LoginAsync(loginViewModel);
-                    if (result2.Succeeded)
+                    // Gerar token de confirmação de email
+                    var token = await _userHelper.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, token },
+                        protocol: HttpContext.Request.Scheme);
+
+                    // Enviar email de confirmação
+                    var emailBody = $"Please confirm your account by clicking <a href='{confirmationLink}'>here</a>.";
+                    var emailResponse = _mailHelper.SendEmail(user.Email, "Confirm your email", emailBody);
+
+                    if (!emailResponse.IsSuccess)
                     {
-                        return RedirectToAction("Index", "Home");
+                        ModelState.AddModelError(string.Empty, "The confirmation email could not be sent.");
+                        return View(model);
                     }
 
-                    ModelState.AddModelError(string.Empty, "The user couldn´t be logged.");
+                    TempData["Message"] = "Registration successful! Please check your email to confirm your account.";
+                    return RedirectToAction("Index", "Home");
                 }
+
+                ModelState.AddModelError(string.Empty, "This email is already in use.");
             }
+
             return View(model);
+
+            
         }
 
 
@@ -185,14 +209,13 @@ namespace LigaWeb.Controllers
             return View();
         }
 
-        [Authorize(Roles = "Admin, Club, Employee")]
+        
         public IActionResult RecoverPassword()
         {
             return View();
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin, Club, Employee")]
+        [HttpPost]        
         public async Task<IActionResult> RecoverPassword(RecoverPasswordViewModel model)
         {
             if (ModelState.IsValid)
@@ -292,6 +315,112 @@ namespace LigaWeb.Controllers
             return View(model);
         }
 
-        
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return RedirectToAction("Error", "Home", new { message = "Invalid email confirmation request." });
+            }
+
+            var user = await _userHelper.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home", new { message = "User not found." });
+            }
+
+            var result = await _userHelper.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View("ConfirmEmailSuccess");
+            }
+
+            return View("ConfirmEmailFailure");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> AddUser()
+        {
+            var clubs = await _context.Clubs.ToListAsync();
+            var roles = await _userHelper.GetAllRolesAsync();
+
+            var model = new AddUserViewModel
+            {
+                Clubs = clubs.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList(),
+                Roles = roles.Select(r => new SelectListItem
+                {
+                    Value = r,
+                    Text = r
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> AddUser(AddUserViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                var clubs = await _context.Clubs.ToListAsync();
+                var roles = await _userHelper.GetAllRolesAsync();
+
+                model.Clubs = clubs.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+                model.Roles = roles.Select(r => new SelectListItem
+                {
+                    Value = r,
+                    Text = r
+                }).ToList();
+
+                return View(model);
+            }
+
+            var user = new User
+            {
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                UserName = model.Email,
+                ClubId = model.ClubId
+            };
+
+            var result = await _userHelper.AddUserAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                //return View(model);
+            }
+
+            // Adiciona o Role ao usuário
+            if (model.RoleId != "")
+            {
+                var role = await _roleManager.FindByNameAsync(model.RoleId);
+                if (role == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid role selected.");
+                    return View(model);
+                }
+
+                await _userHelper.AddUserToRoleAsync(user, role.Name);
+            }            
+
+            TempData["Message"] = "User successfully created.";
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

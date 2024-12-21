@@ -68,7 +68,13 @@ namespace LigaWeb.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-		[HttpGet]
+        public IActionResult Error(string message)
+        {
+            ViewData["Message"] = message;
+            return View();
+        }
+
+        [HttpGet]
 
 		public IActionResult AccessDenied(string returnUrl)
 		{

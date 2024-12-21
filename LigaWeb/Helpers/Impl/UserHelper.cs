@@ -109,5 +109,11 @@ namespace LigaWeb.Helpers.Impl
         {
             return await _userManager.FindByIdAsync(userId);
         }
+
+        // Método para obter todas as roles
+        public async Task<List<string>> GetAllRolesAsync()
+        {
+            return _roleManager.Roles.Select(r => r.Name).ToList();
+        }
     }
 }
