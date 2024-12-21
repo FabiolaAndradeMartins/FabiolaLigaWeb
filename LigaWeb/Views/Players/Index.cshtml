@@ -1,16 +1,26 @@
 ﻿@model IEnumerable<LigaWeb.Data.Entities.Player>
 
+@using LigaWeb.Data.Entities
+@inject IUserService UserService
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    User currentUser = null;
+
+    if (this.User.Identity.IsAuthenticated)
+    {
+        currentUser = await UserService.GetUserAsync();
+    }
 }
 
 <h1>Index</h1>
 
 <p>
     @if (User.IsInRole("Admin") || User.IsInRole("Club"))
-    {
-        <a class="btn btn-primary" asp-action="Create">Create New</a>
+    {        
+        <a class="btn btn-primary" asp-action="Create">Create New</a>               
     }    
 </p>
 
@@ -57,13 +67,15 @@
             </td>
                
                 <td>
-                   
+                    <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
 
                     @if (User.IsInRole("Admin") || User.IsInRole("Club") )
                     {
-                        <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                        <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        @if ((currentUser != null && currentUser.ClubId == item.ClubId) && (currentUser != null))
+                        {
+                            <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>                        
+                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
                     }
             </td>
         </tr>

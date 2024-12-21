@@ -15,12 +15,14 @@ namespace LigaWeb.Controllers
         private readonly IPlayerRepository _playerRepository;
         private readonly IClubRepository _clubRepository;
         private readonly DataContext _context;
+        private readonly IUserService _userService;
 
-        public PlayersController(IPlayerRepository layerRepository, IClubRepository clubRepository, DataContext context)
+        public PlayersController(IPlayerRepository layerRepository, IClubRepository clubRepository, DataContext context, IUserService userService)
         {
             _playerRepository = layerRepository;
             _clubRepository = clubRepository;
             _context = context;
+            _userService = userService;
         }
 
         // GET: Players
@@ -42,6 +44,10 @@ namespace LigaWeb.Controllers
             }
 
             var player = await _playerRepository.GetByIdAsync(id.Value);
+            if (player.ClubId != null)
+            {
+                player.Club = await _clubRepository.GetByIdAsync(player.ClubId.Value);
+            }
 
             if (player == null)
             {
@@ -73,9 +79,23 @@ namespace LigaWeb.Controllers
 
         // GET: Players/Create
         [Authorize(Roles = "Club")]
-        public IActionResult Create()
-        {            
-            ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name");
+        public async Task<IActionResult> Create()
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+
+            if (currentUser != null && currentUser.ClubId.HasValue)
+            {
+                var clubs = _clubRepository
+                    .GetAll()
+                    .Where(o => o.Id == currentUser.ClubId);
+
+                ViewData["ClubId"] = new SelectList(clubs, "Id", "Name");
+            }
+            else
+            {
+                ViewData["ClubId"] = new SelectList(_clubRepository.GetAll(), "Id", "Name");
+            }
+            
             return View();
         }
 

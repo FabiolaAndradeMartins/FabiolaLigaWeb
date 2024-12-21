@@ -1,8 +1,19 @@
 ﻿@model LigaWeb.Data.Entities.Player
 
+@using LigaWeb.Data.Entities
+@inject IUserService UserService
+
+
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    User currentUser = null;
+
+    if (this.User.Identity.IsAuthenticated)
+    {
+        currentUser = await UserService.GetUserAsync();
+    }
 }
 
 <h1>Create</h1>
@@ -33,10 +44,15 @@
                 <input asp-for="Photo" class="form-control" />
                 <span asp-validation-for="Photo" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="ClubId" class="control-label">Club</label>
-                <select asp-for="ClubId" class ="form-control" asp-items="ViewBag.ClubId"></select>
-            </div>
+
+            @if(currentUser != null)
+            {
+                <div class="form-group">
+                    <label asp-for="ClubId" class="control-label">Club</label>
+                    <select asp-for="ClubId" class="form-control" asp-items="ViewBag.ClubId"></select>
+                </div>                
+            }            
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" /> |
                 <a class="btn btn-secondary" asp-action="Index">Back to List</a>

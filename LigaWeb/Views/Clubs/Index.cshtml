@@ -1,72 +1,87 @@
 ﻿@model IEnumerable<LigaWeb.Data.Entities.Club>
 
+@using LigaWeb.Data.Entities
+@inject IUserService UserService
+
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Index";
+	Layout = "~/Views/Shared/_Layout.cshtml";
+
+	User currentUser = null;
+
+	if (this.User.Identity.IsAuthenticated)
+	{
+		currentUser = await UserService.GetUserAsync();
+	}
+
 }
 
 <h1>Index</h1>
 
 <p>
-    <a class="btn btn-primary" asp-action="Create">Create New</a>
+	<a class="btn btn-primary" asp-action="Create">Create New</a>
 </p>
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Nickname)
-            </th>
-            <th>
-                Foundation
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Location)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Coach)
-            </th>
-            <th>
-               Emblem
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Stadium)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nickname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.YearOfFoundation)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Location)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Coach)
-            </td>
-            <td>                
-                <img src="@item.TeamEmblem" height="50px" width="50px" alt="Alternate Text" />
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Stadium.Name)
-            </td>
-            <td>
-                    <a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
+	<thead>
+		<tr>
+			<th>
+				@Html.DisplayNameFor(model => model.Name)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Nickname)
+			</th>
+			<th>
+				Foundation
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Location)
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Coach)
+			</th>
+			<th>
+				Emblem
+			</th>
+			<th>
+				@Html.DisplayNameFor(model => model.Stadium)
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		@foreach (var item in Model)
+		{
+			<tr>
+				<td>
+					@Html.DisplayFor(modelItem => item.Name)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Nickname)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.YearOfFoundation)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Location)
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Coach)
+				</td>
+				<td>
+					<img src="@item.TeamEmblem" height="50px" width="50px" alt="Alternate Text" />
+				</td>
+				<td>
+					@Html.DisplayFor(modelItem => item.Stadium.Name)
+				</td>
+				<td>
+					<a class="btn btn-outline-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Details</a>
+					@if ((currentUser != null && currentUser.ClubId == item.Id) && (currentUser != null))
+					{
+						<a class="btn btn-outline-primary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+						<a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+					}
+				</td>
+			</tr>
+		}
+	</tbody>
 </table>

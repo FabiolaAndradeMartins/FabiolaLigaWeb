@@ -1,3 +1,4 @@
+using LigaWeb;
 using LigaWeb.Data;
 using LigaWeb.Data.Entities;
 using LigaWeb.Data.Repositories.Impl;
@@ -57,8 +58,9 @@ builder.Services.AddScoped<IStadiumRepository, StadiumRepository>();
 builder.Services.AddScoped<IClubRepository, ClubRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IGameRepository, GameRepository>();
-
 builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddHttpContextAccessor();
 
 // Configurar Swagger
 builder.Services.AddEndpointsApiExplorer();

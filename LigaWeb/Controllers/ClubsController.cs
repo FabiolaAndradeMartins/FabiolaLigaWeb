@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LigaWeb.Data;
@@ -15,19 +16,29 @@ namespace LigaWeb.Controllers
     {
         private readonly DataContext _context;
         private readonly IClubRepository _clubRepository;
+        private readonly UserManager<User> _userManager;
 
-        public ClubsController(DataContext context, IClubRepository clubRepository)
+        public ClubsController(DataContext context, IClubRepository clubRepository, UserManager<User> userManager)
         {
             _context = context;
             _clubRepository = clubRepository;
+            _userManager = userManager;
         }
 
         // GET: Clubs
         [Authorize(Roles ="Admin, Club")]
         public async Task<IActionResult> Index()
         {
-            var dataContext = _context.Clubs.Include(c => c.Stadium);
-            return View(await dataContext.ToListAsync());
+            // Obtém o usuário logado
+            var currentUser = await _userManager.GetUserAsync(User);
+
+            List<Club> clubs = new List<Club>();
+
+            clubs = await _context.Clubs
+                .Include(o => o.Stadium)
+                .ToListAsync();
+
+            return View(clubs);
         }        
 
         // GET: Clubs/Details/5
@@ -110,7 +121,7 @@ namespace LigaWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, Club")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Nickname,YearOfFoundation,Location,Coach,TeamEmblem,StadiumId")] Club club)
+        public async Task<IActionResult> Edit(int id, Club club)
         {
             if (id != club.Id)
             {

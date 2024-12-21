@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject IUserService UserService
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -173,11 +175,21 @@
                             <a class="nav-link games-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
                         </li>
                     </ul>
+
                     <ul class="nav navbar-nav navbar-right">
-                        @if(this.User.Identity.IsAuthenticated)
-                        {
+                        @if (this.User.Identity.IsAuthenticated)
+                        {                            
+                            var currentUser = await UserService.GetUserAsync();
+
                             <li class="nav-item">
-                                <a class="nav-link user-link" asp-area="" asp-controller="Account" asp-action="ChangeUser">@this.User.Identity.Name</a>
+                                <a class="nav-link user-link" asp-area="" asp-controller="Account" asp-action="ChangeUser">
+                                    @currentUser.FirstName @currentUser.LastName
+
+                                    @if (currentUser.Club != null)
+                                    {
+                                        <span> - @currentUser.Club.Name</span>
+                                    }
+                                </a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link logout-link" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a>
