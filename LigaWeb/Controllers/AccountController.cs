@@ -23,19 +23,22 @@ namespace LigaWeb.Controllers
         private readonly IConfiguration _configuration;
         private readonly DataContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
 
         public AccountController(
             IUserHelper userHelper,
             IMailHelper mailHelper,
             IConfiguration configuration,
             DataContext context,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            UserManager<User> userManager)
         {
             this._userHelper = userHelper;
             this._mailHelper = mailHelper;
             this._configuration = configuration;
             _context = context;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         [HttpPost]
@@ -386,31 +389,9 @@ namespace LigaWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(AddUserViewModel model, IFormFile? photo)
         {
-
             if (!ModelState.IsValid)
             {
-
-                if (photo != null)
-                {
-                    // Salvar a foto no diretório de uploads
-                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
-                    var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
-                    var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                    // Certifique-se de que o diretório existe
-                    Directory.CreateDirectory(uploadsFolder);
-
-                    // Salvar o arquivo
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await photo.CopyToAsync(stream);
-                    }
-
-                    // Atualizar o caminho no modelo
-                    model.PhotoPath = $"/uploads/{uniqueFileName}";
-                }
-
-
+                // Popula os Clubs e Roles novamente para retornar a View em caso de erro.
                 var clubs = await _context.Clubs.ToListAsync();
                 var roles = await _userHelper.GetAllRolesAsync();
 
@@ -428,6 +409,24 @@ namespace LigaWeb.Controllers
                 return View(model);
             }
 
+            // Processa a foto se fornecida.
+            if (photo != null)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + photo.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                Directory.CreateDirectory(uploadsFolder);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await photo.CopyToAsync(stream);
+                }
+
+                model.PhotoPath = $"/uploads/{uniqueFileName}";
+            }
+
+            // Cria o usuário.
             var user = new User
             {
                 FirstName = model.FirstName,
@@ -446,11 +445,11 @@ namespace LigaWeb.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-                //return View(model);
+                return View(model);
             }
 
-            // Adiciona o Role ao usuário
-            if (model.RoleId != "")
+            // Adiciona o usuário ao Role selecionado.
+            if (!string.IsNullOrEmpty(model.RoleId))
             {
                 var role = await _roleManager.FindByNameAsync(model.RoleId);
                 if (role == null)
@@ -460,11 +459,47 @@ namespace LigaWeb.Controllers
                 }
 
                 await _userHelper.AddUserToRoleAsync(user, role.Name);
-            }            
+            }
 
-            TempData["Message"] = "User successfully created.";
+            // Gera o token de confirmação de email.
+            var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action(
+                "ConfirmEmail",
+                "Account",
+                new { userId = user.Id, token = emailToken },
+                Request.Scheme
+            );
+
+            // Gera o token para redefinição de senha.
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetPasswordLink = Url.Action(
+                "ResetPassword",
+                "Account",
+                new { token = resetToken, email = user.Email },
+                Request.Scheme
+            );
+
+            // Corpo do email.
+            var subject = "Account Confirmation and Password Reset";
+            var body = $@"
+                <h1>Welcome to Our Application</h1>
+                <p>Please confirm your email by clicking the link below:</p>
+                <a href='{confirmationLink}'>Confirm Email</a>
+                <p>Additionally, you can set your password using the link below:</p>
+                <a href='{resetPasswordLink}'>Reset Password</a>";
+
+            // Envia o email.
+            var emailResponse = _mailHelper.SendEmail(user.Email, subject, body);
+
+            if (!emailResponse.IsSuccess)
+            {
+                TempData["Error"] = "Failed to send email. Please check your email configuration.";
+            }
+
+            TempData["Message"] = "User successfully created and confirmation email sent.";
             return RedirectToAction("Index", "Home");
         }
+
 
     }
 }

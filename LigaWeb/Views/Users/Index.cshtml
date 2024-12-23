@@ -30,7 +30,20 @@
                 <td>@user.UserName</td>
                 <td>@user.Email</td>
                 <td>@user.Roles</td>
-                <td><img src="@user.PhotoPath" alt="User Photo" style="max-width: 150px;" /></td>
+                <td>
+                    @{
+                        var photoPath = user.PhotoPath;
+
+                        var absolutePath = Directory.GetCurrentDirectory() + "\\wwwroot\\" + photoPath?.TrimStart('/');
+
+                        var photoExists = !string.IsNullOrEmpty(photoPath) && System.IO.File.Exists(absolutePath);
+
+                        var displayPhotoPath = photoExists ? photoPath : "/uploads/no_user_photo.jpg";
+                    }
+
+                    <img src="@displayPhotoPath" alt="User Photo" style="max-width: 60px;" />                    
+
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@user.UserId" class="btn btn-warning">Edit</a>
                     <a asp-action="Delete" asp-route-id="@user.UserId" class="btn btn-danger">Delete</a>

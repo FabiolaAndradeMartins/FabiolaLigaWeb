@@ -1,24 +1,25 @@
 ﻿using LigaWeb.Data.Entities;
+using LigaWeb.Helpers.Interfaces;
 using LigaWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace LigaWeb.Controllers
 {
-    
+
     public class UsersController : Controller
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMailHelper _mailHelper;
 
-        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IMailHelper mailHelper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mailHelper = mailHelper;
         }
 
         // GET: Users
@@ -101,6 +102,30 @@ namespace LigaWeb.Controllers
                         await _userManager.AddToRoleAsync(user, model.Role);
                     }
 
+                    // Gerar token de confirmação
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action(
+                        "ConfirmEmail",
+                        "Account",
+                        new { userId = user.Id, token },
+                        Request.Scheme
+                    );
+
+                    // Corpo do email
+                    var subject = "Confirm your email";
+                    var body = $@"
+                        <h1>Email Confirmation</h1>
+                        <p>Please confirm your email by clicking the link below:</p>
+                        <a href='{confirmationLink}'>Confirm Email</a>";
+
+                    // Enviar email
+                    var emailResponse = _mailHelper.SendEmail(user.Email, subject, body);
+
+                    if (!emailResponse.IsSuccess)
+                    {
+                        ModelState.AddModelError("", "Failed to send confirmation email.");
+                    }
+
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -113,6 +138,31 @@ namespace LigaWeb.Controllers
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
             return View(model);
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                return View("ConfirmEmailSuccess");
+            }
+
+            return View("ConfirmEmailFailure");
+        }
+
 
         // GET: Users/Edit/5
         [Authorize(Roles = "Admin")]

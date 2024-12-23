@@ -27,13 +27,13 @@ namespace LigaWeb.Models
         [Display(Name = "Club")]
         public int? ClubId { get; set; }
 
-        public List<SelectListItem> Clubs { get; set; }
+        public List<SelectListItem>? Clubs { get; set; }
 
         [Required]
         [Display(Name = "Role")]
         public string RoleId { get; set; }
 
-        public List<SelectListItem> Roles { get; set; }
+        public List<SelectListItem>? Roles { get; set; }
 
         public string? PhotoPath { get; set; }
     }
