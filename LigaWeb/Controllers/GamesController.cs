@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using LigaWeb.Data.Repositories.Interfaces;
 using LigaWeb.Helpers.Impl;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace LigaWeb.Controllers
 {
@@ -18,20 +19,28 @@ namespace LigaWeb.Controllers
         private readonly IClubRepository _clubRepository;
         private readonly IGameRepository _gameRepository;
         private readonly IStadiumRepository _stadiumRepository;
+        private readonly UserManager<User> _userManager;
 
-        public GamesController(IClubRepository clubRepository, IGameRepository gameRepository, IStadiumRepository stadiumRepository)
+        User user;
+
+        public GamesController(IClubRepository clubRepository, IGameRepository gameRepository, IStadiumRepository stadiumRepository, UserManager<User> userManager)
         {
             _clubRepository = clubRepository;
             _gameRepository = gameRepository;
             _stadiumRepository = stadiumRepository;
+            _userManager = userManager;            
         }
 
         // GET: Games
         [Authorize(Roles = "Employee")]
         public async Task<IActionResult> Index()
         {
+            // Obtém o usuário logado
+            var currentUser = await _userManager.GetUserAsync(User);
+
             var games = _gameRepository
-                .GetAll(x => x.HostClub, x => x.Stadium, x => x.VisitingClub);
+                .GetAll(x => x.HostClub, x => x.Stadium, x => x.VisitingClub)
+                .Where(x => x.HostClubId == currentUser.ClubId || x.VisitingClubId == currentUser.ClubId);
 
 			// Preparar os dados para o Gráfico de Barras
 			var barChartData = new List<object>
@@ -44,7 +53,6 @@ namespace LigaWeb.Controllers
 			    new object[] { "Goal Kicks", games.Sum(g => g.HostsGoalKicks), games.Sum(g => g.VistorsGoalKicks) },
 			    new object[] { "Goals", games.Sum(g => g.HostsGoals), games.Sum(g => g.VistorsGoals) }
 		    };
-
 
             // Agregar o número de jogos por data
             var jogosPorData = games

@@ -1,10 +1,13 @@
-﻿using LigaWeb.Data.Entities;
+﻿using LigaWeb.Data;
+using LigaWeb.Data.Entities;
+using LigaWeb.Data.Repositories.Interfaces;
 using LigaWeb.Helpers.Interfaces;
 using LigaWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace LigaWeb.Controllers
 {
@@ -13,21 +16,27 @@ namespace LigaWeb.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IClubRepository _clubRepository;
         private readonly IMailHelper _mailHelper;
+        private readonly DataContext _dataContext;
 
-        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IMailHelper mailHelper)
+        public UsersController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IMailHelper mailHelper, IClubRepository clubRepository, DataContext dataContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mailHelper = mailHelper;
+            _clubRepository = clubRepository;
+            _dataContext = dataContext;
         }
 
         // GET: Users
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
-            // Obtenha todos os usuários
-            var users = _userManager.Users.ToList();
+            // Inclui os dados do Club ao buscar os usuários
+            var users = await _dataContext.Users
+                .Include(u => u.Club) // Inclui a relação com o Club
+                .ToListAsync();
 
             // Crie uma lista para armazenar o usuário com sua role
             var userRolesViewModel = new List<UserRolesViewModel>();
@@ -35,13 +44,15 @@ namespace LigaWeb.Controllers
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+
                 userRolesViewModel.Add(new UserRolesViewModel
                 {
                     UserId = user.Id,
                     UserName = user.UserName,
                     Email = user.Email,
                     Roles = string.Join(", ", roles), // Concatenar as roles em uma string
-                    PhotoPath = user.PhotoPath
+                    PhotoPath = user.PhotoPath,
+                    ClubName = user.Club?.Name // Nome do clube ou null se não houver
                 });
             }
 
@@ -54,6 +65,7 @@ namespace LigaWeb.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+            ViewBag.Clubes = new SelectList(_clubRepository.GetAll(), "Id", "Name");
             return View();
         }
 
@@ -136,6 +148,7 @@ namespace LigaWeb.Controllers
             }
 
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name");
+            ViewBag.Clubs = new SelectList(_clubRepository.GetAll(), "Id", "Name");
             return View(model);
         }
 
@@ -191,6 +204,7 @@ namespace LigaWeb.Controllers
             };
 
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name", model.Role);
+            ViewBag.Clubs = new SelectList(_clubRepository.GetAll(), "Id", "Name");
             return View(model);
         }
 
@@ -212,6 +226,7 @@ namespace LigaWeb.Controllers
                 user.LastName = model.LastName;
                 user.Email = model.Email;
                 user.UserName = model.UserName;
+                user.ClubId = model.ClubId;
 
                 if (photo != null)
                 {
@@ -255,6 +270,7 @@ namespace LigaWeb.Controllers
             }
 
             ViewBag.Roles = new SelectList(_roleManager.Roles.ToList(), "Name", "Name", model.Role);
+            ViewBag.Clubs = new SelectList(_clubRepository.GetAll().ToList(), "Id", "Name");
             return View(model);
         }
 

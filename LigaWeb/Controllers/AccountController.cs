@@ -400,6 +400,7 @@ namespace LigaWeb.Controllers
                     Value = c.Id.ToString(),
                     Text = c.Name
                 }).ToList();
+
                 model.Roles = roles.Select(r => new SelectListItem
                 {
                     Value = r,

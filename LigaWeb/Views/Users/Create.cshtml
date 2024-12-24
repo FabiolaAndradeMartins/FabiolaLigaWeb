@@ -2,6 +2,19 @@
 
 <h2>Create New User</h2>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p><strong>There were some issues with your submission:</strong></p>
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label asp-for="FirstName"></label>
@@ -22,7 +35,9 @@
     <div class="form-group">
         <label for="password">Password</label>
         <input type="password" id="password" name="password" class="form-control" />
-    </div>   
+    </div>  
+    
+    
 
     <div class="form-group">
         <label for="Photo">Photo</label>
@@ -39,6 +54,14 @@
                 <option value="@role.Value">@role.Text</option>
             }
         </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClubId"></label>
+        <select asp-for="ClubId" class="form-control" asp-items="@ViewBag.Clubes">
+            <option value="">-- Select a Club --</option>
+        </select>
+        <span asp-validation-for="ClubId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Create</button>

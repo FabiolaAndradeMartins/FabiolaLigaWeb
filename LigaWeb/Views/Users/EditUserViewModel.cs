@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LigaWeb.Data.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace LigaWeb.Models
 {
@@ -22,5 +23,8 @@ namespace LigaWeb.Models
         public string Role { get; set; } // Role atual do usuário
 
         public string? PhotoPath { get; set; }
+
+        public int? ClubId { get; set; }
+
     }
 }

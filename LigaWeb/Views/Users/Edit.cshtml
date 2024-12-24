@@ -4,6 +4,19 @@
 
 <h2>Edit User</h2>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p><strong>There were some issues with your submission:</strong></p>
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
     <input type="hidden" asp-for="Id" />
 
@@ -48,6 +61,14 @@
                 </option>
             }
         </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClubId"></label>
+        <select asp-for="ClubId" class="form-control" asp-items="ViewBag.Clubs">
+            <option value="">-- Select a Club --</option>
+        </select>
+        <span asp-validation-for="ClubId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

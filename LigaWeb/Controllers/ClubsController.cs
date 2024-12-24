@@ -155,7 +155,7 @@ namespace LigaWeb.Controllers
         }
 
         // GET: Clubs/Delete/5
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Club")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Clubs == null)
@@ -179,7 +179,7 @@ namespace LigaWeb.Controllers
         // POST: Clubs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Club")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Clubs == null)

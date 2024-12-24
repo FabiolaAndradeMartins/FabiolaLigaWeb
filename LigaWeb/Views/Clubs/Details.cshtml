@@ -7,6 +7,19 @@
 
 <h1>Details</h1>
 
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <p><strong>There were some issues with your submission:</strong></p>
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
 <div>
     <h4>Club</h4>
     <hr />
